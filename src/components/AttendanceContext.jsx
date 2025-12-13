@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 export const AttendanceContext = createContext();
 
 export const AttendanceProvider = ({children}) => {
-    const API  = "http://localhost:5000"
+    const API  = "https://attendance-um8v.onrender.com"
     const navigate = useNavigate();
     const [attendance,setAttendance] = useState();
     useEffect(() => {
