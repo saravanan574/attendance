@@ -39,7 +39,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 app.get("/",(req,res) => {
-    res.sendFile(dir+"/index.html");
+    res.sendFile(path.join(dir,"..","..","index.html"));
 })
 
 app.post("/register",async(req,res) => {
