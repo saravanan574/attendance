@@ -2,7 +2,7 @@
 import {BrowserRouter,Routes,Route} from "react-router-dom";
 import Home from "./pages/Home";
 import Attendance from "./pages/Attendance";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register"
 import {AttendanceProvider} from "./components/AttendanceContext";
 import "./App.css"
