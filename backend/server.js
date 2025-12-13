@@ -38,7 +38,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.log("MongoDB Error:", err));
 console.log(path.join(dir,"..","src","index.html"));
 app.get("/",(req,res) => {
-    res.sendFile(path.join(dir,"..","src","index.html"));
+    res.sendFile(dir+"/index.html");
 })
 
 app.post("/register",async(req,res) => {

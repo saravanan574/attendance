@@ -6,7 +6,7 @@ import {AttendanceContext} from "./AttendanceContext";
 const AttendanceHistory = () => {
     const { attendance, setAttendance } = useContext(AttendanceContext);
     const [today,setToday] = useState([]);
-    const API = "http://localhost:5000";
+    const API = "https://attendance-um8v.onrender.com";
     const [history,setHistory] = useState(attendance.days);
     const [filter,setFilter] = useState("All");
     const [modify,setModify ] = useState(false);
