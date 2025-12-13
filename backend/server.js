@@ -36,9 +36,9 @@ const User = mongoose.model("user",user);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Error:", err));
-console.log(path.join(dir,"..","src","index.html"));
+
 app.get("/",(req,res) => {
-    res.sendFile(dir+"/index.html");
+    res.sendFile(path.join(dir,"..","frontend","index.html"));
 })
 
 app.post("/register",async(req,res) => {
