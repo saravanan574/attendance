@@ -9,7 +9,7 @@ const Attendance = () =>{
     const { attendance, setAttendance } = useContext(AttendanceContext);
     if(!attendance) return <p>Loading...</p>
     const navigate = useNavigate();
-    const API = "http://localhost:5000"
+    const API = "https://attendance-um8v.onrender.com"
     const logout = async() => {
         const log = await fetch(`${API}/logout`,{
             method :"GET",
