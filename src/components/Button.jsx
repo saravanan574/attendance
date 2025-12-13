@@ -1,0 +1,46 @@
+const Button = ({children,onClick,className ,type = "button",variant = "default"}) => {
+
+    const design = {
+        "default":{
+            padding:"10px 20px",
+            backgroundColor:"#007bff",
+            color:"white",
+            border:"none",
+            borderRadius:"4px",
+            cursor:"pointer",
+            fontSize:"14px",
+            width:"100%"
+        },
+        "att-btn":{
+            padding:"10px 13px",
+            backgroundColor:"#4aa3df",
+            color:"#ffffff",
+            border:"none",
+            borderRadius:"4px",
+            cursor:"pointer",
+            fontSize:"16px",
+            margin:"2px",
+            fontweight:"400",
+            lineHeight:"1",
+            display:"inline-flex",
+            alignItem:"center",
+            justifyContent:"center",
+            userSelect:"none",
+            whiteSpace:"nowrap",
+            transition:"background-color 2s ease, transform 0.1s ease",
+            width:"min-content",
+            height:"min-content"
+        }
+    }
+    return (
+        <button 
+            type = {type}
+            onClick = {onClick}
+            style = {design[variant]}
+            className={className}
+        >
+            {children}
+        </button>
+    )
+}
+export default Button;
