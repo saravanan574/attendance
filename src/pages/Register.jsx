@@ -4,7 +4,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import {useNavigate} from "react-router-dom"
 export default function Register(){
-    const API = "http://localhost:5000"
+    const API = "https://attendance-um8v.onrender.com"
     const navigate = useNavigate();
     const [data,setData] = useState({name:"",email:"",password:""});
     const [message,setMessage] = useState("");
