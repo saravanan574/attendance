@@ -14,7 +14,7 @@ const app = express();
 app.use(cors({
   origin:"https://attendance-1-410u.onrender.com/",credentials:true
 }));
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -36,10 +36,6 @@ const User = mongoose.model("user",user);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("MongoDB Error:", err));
-
-app.get("/",(req,res) => {
-    res.sendFile(path.join(dir,"..","frontend","index.html"));
-})
 
 app.post("/register",async(req,res) => {
     try {
@@ -90,8 +86,8 @@ app.post("/login",async(req,res) => {
     )
     res.cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "none",
         maxAge:60*60*1000*2
     });
     res.status(200).json({message:"User is found",status:"success",token});
