@@ -31,14 +31,16 @@ const AttendanceHistory = () => {
     }
   };
 
-  const filterBy = type => {
-    setFilter(type);
-    if (type === "All") {
-      setHistory(attendance.days);
-    } else {
-      setHistory(attendance.days.filter(d => d.status === type));
-    }
-  };
+  const filterBy = (type) => {
+  setFilter(type);
+  const days = attendance.days || [];
+  
+  if (type === "All") {
+    setHistory(days);
+  } else {
+    setHistory(days.filter(d => d.status?.toLowerCase() === type.toLowerCase()));
+  }
+};
 
   const updateHistory = async () => {
     if (!modify) {
