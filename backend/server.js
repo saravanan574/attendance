@@ -1,175 +1,87 @@
-import express, { urlencoded, json } from "express";
+import express from "express";
 import mongoose from "mongoose";
 import { genSalt, hash, compare } from "bcryptjs";
-import { fileURLToPath } from "url";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import cors from "cors";
-import  dotenv  from "dotenv";
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import path from "path";
 
-dotenv.config()
+dotenv.config();
 const app = express();
 
-app.use(cors({
-  origin:"http://localhost:5173",credentials:true
-}));
-const PORT = process.env.PORT;
-app.use(urlencoded({ extended: true }));
+/* ---------- MIDDLEWARE ---------- */
 app.use(express.json());
 app.use(cookieParser());
 
-const filename = fileURLToPath(import.meta.url);
-const dir = path.dirname(filename);
-const user = new mongoose.Schema({
-    id:{type:String,required:true},
-    name:{type:String,required:true},
-    email:{type:String,required:true},
-    password:{type:String,required:true},
-    days:[{
-        date:{type:String},day:{type:String},status:{type:String,enum:["Present","Absent","Holiday"],default:null}
-    }]
-})
+app.use(cors({
+  origin: "https://attendance-1-410u.onrender.com", // 🔴 CHANGE TO YOUR FRONTEND URL
+  credentials: true
+}));
 
-const User = mongoose.model("user",user);
+const PORT = process.env.PORT || 5000;
 
+/* ---------- DATABASE ---------- */
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log("MongoDB Error:", err));
-console.log(path.join(dir,"..","src","index.html"));
-app.get("/",(req,res) => {
-    res.sendFile(dir+"/index.html");
-})
+  .catch(err => console.error("MongoDB Error:", err));
 
-app.post("/register",async(req,res) => {
-    try {
-        const { name,email,password} = req.body;
-        let exists = await User.findOne({email });
-        if (exists) {
-          return res.status(400).json({ success: false, message: "Email is already registered" });
-        }
-    
-        const id = Math.round(Date.now() * 100000);
-        const salt = await genSalt(10);
-        const pw = await hash(password,salt);
-        // Create new user
-        const newUser = new User({
-          id,
-          name,email,
-          password:pw,
-          days:getWorkingDays(12, 2025, 4, 2026)
-        });
-        const user = await newUser.save();
-        console.log(`${newUser.name} registered successfully`);
-        res.status(200).json({ status: "success", message: "Registration successful" });
-    
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ status: "failed", message: "Server error. Try again later." });
-      }
-})
+/* ---------- MODEL ---------- */
+const userSchema = new mongoose.Schema({
+  id: String,
+  name: String,
+  email: String,
+  password: String,
+  days: [{
+    date: String,
+    day: String,
+    status: { type: String, enum: ["Present", "Absent", "Holiday"], default: null }
+  }]
+});
+const User = mongoose.model("user", userSchema);
 
-app.get("/login",async(req,res)=> {
-    const token = req.headers.authorizations.split(" ")[1];
-    if(token)
-        res.status(200).json({message:"/attendance",status:"success"});
-    else
-        res.status(200).json({message:"/login",status:"success"});
-})
-app.post("/login",async(req,res) => {
-    
-    const {email,password} = req.body;
-    const mail = await User.findOne({email});
-    if(!mail) return res.status(401).json({message:"Email is invalid",status:"failed"});
-    const ps = await compare(password,mail.password);
-    if(!ps) return res.status(401).json({message:"Password is invalid",status:"failed"});
-    const token = jwt.sign(
-        {id:mail.id}, 
-        process.env.ACCESS_TOKEN_SECRET,
-        {expiresIn:"1d"}
-    )
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge:60*60*1000*2
-    });
-    res.status(200).json({message:"User is found",status:"success",token});
-})
+/* ---------- AUTH ROUTES ---------- */
+app.post("/api/auth/register", async (req, res) => {
+  const { name, email, password } = req.body;
 
-const verifyToken = (req,res,next) =>{
-    const token = req.headers.authorizations.split(" ")[1];
-    if(!token || token == null) return res.status(402).json({message:"Token is invalid",status:"failed"});
-    const user = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-    req.id = user.id;
-    next();
-}
+  const exists = await User.findOne({ email });
+  if (exists) return res.status(400).json({ status: "failed", message: "Email exists" });
 
-app.get("/logout",(req,res) => {
-    const cookie = req.cookies.token;
-    if(cookie){
-        res.clearCookie("token",{
-            httpOnly:true,
-            secure:false,
-            sameSite:"none"
-        });
-        console.log("Logout ");
-        res.status(200).json();
-    }
-    else{
-        console.log("No token");
-        res.status(402).json();
-    }
-})
-function getWorkingDays(startMonth, startYear, endMonth, endYear) {
-    const workingDays = [];
-    const startDate = new Date(startYear, startMonth - 1, 1);
-    const endDate = new Date(endYear, endMonth, 0); // last day of endMonth
+  const hashed = await hash(password, await genSalt(10));
+  await User.create({ id: Date.now(), name, email, password: hashed, days: [] });
 
-    let current = new Date(startDate);
-    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    while (current <= endDate) {
-        const y = current.getDay(); // 0 = Sunday
-        if (y !== 0) {
-            console.log(y,days[y],current);
-            const yyy = current.getFullYear();
-            const mm = String(current.getMonth()+1).padStart(2,"0");
-            const dd = String(current.getDate()).padStart(2,"0");
-            workingDays.push({
-                date: `${yyy}-${mm}-${dd}`,
-                day: days[y],
-                status: null
-            });
-        }
-        current.setDate(current.getDate() + 1);
-    }
-    return workingDays;
-}
+  res.json({ status: "success" });
+});
 
-app.get("/attendance",verifyToken,async(req,res) => {
-    const id = req.id;
-    const data = await User.findOne({id});
-    if(!data) return res.status(401).json({message:"User is not found",status:"failed"});
-    const today = new Date();
-    const filter = data.days.filter(d => new Date(d.date)<= today)
-    const k = {name:data.name,email:data.email,days:filter.reverse()};
-    res.status(200).json({message:"Data get successfully",status:"success",data:k});
+app.post("/api/auth/login", async (req, res) => {
+  const { email, password } = req.body;
 
-})
+  const user = await User.findOne({ email });
+  if (!user) return res.status(401).json({ status: "failed", message: "Invalid email" });
 
-app.put("/update",verifyToken,async(req,res) => {
-    const id = req.id;
-    const user = await User.findOne({id});
-    if(!user) return res.status(301).json({message:"User not found",status:"failed"});
-    const update = req.body;
-    const updated = user.days.map(d => {
-        const us = update.find(f => f.date == d.date);
-        return us?{...d,status:us.status}:d;
-    })
-    user.days = updated;
-    await user.save();
-    res.status(200).json({message:"Updated successfully",status:"success",data:user});
-})
-app.listen(PORT,() => {
-    console.log("Server is listening in http://localhost:",PORT);
-})
+  const ok = await compare(password, user.password);
+  if (!ok) return res.status(401).json({ status: "failed", message: "Invalid password" });
+
+  const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" });
+
+  res.json({ status: "success", token });
+});
+
+/* ---------- AUTH MIDDLEWARE ---------- */
+const verifyToken = (req, res, next) => {
+  const auth = req.headers.authorization;
+  if (!auth) return res.sendStatus(401);
+
+  const token = auth.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  req.id = decoded.id;
+  next();
+};
+
+/* ---------- ATTENDANCE ---------- */
+app.get("/api/attendance", verifyToken, async (req, res) => {
+  const user = await User.findOne({ id: req.id });
+  if (!user) return res.sendStatus(401);
+  res.json({ status: "success", data: user });
+});
+
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
