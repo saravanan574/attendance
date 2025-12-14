@@ -5,7 +5,7 @@ import Button from "./Button";
 const AttendanceCard = () => {
   const { attendance } = useContext(AttendanceContext);
 
-  if (!attendance) return null; // ✅ prevent crash
+  if (!attendance) return null;
 
   const total = attendance.presentCount + attendance.absentCount || 1;
   const basePercentage = Math.ceil(
