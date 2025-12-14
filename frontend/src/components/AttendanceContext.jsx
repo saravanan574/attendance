@@ -6,7 +6,7 @@ export const AttendanceContext = createContext();
 export const AttendanceProvider = ({ children }) => {
   const API = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
-  const [attendance, setAttendance] = useState(null);
+  const [attendance, setAttendance] = useState();
 
   useEffect(() => {
     const load = async () => {
@@ -19,12 +19,13 @@ export const AttendanceProvider = ({ children }) => {
 
       if (!res.ok) return navigate("/login");
       const data = await res.json();
+      const dat = data.data;
       setAttendance(prev => ({
                     ...prev,
-                    data,
-                    presentCount:data.days.filter(item => item.status === "Present").length,
-                    absentCount:data.days.filter(item => item.status === "Absent").length,
-                    days:data.days
+                    data:dat,
+                    presentCount:dat.days.filter(item => item.status === "Present").length,
+                    absentCount:dat.days.filter(item => item.status === "Absent").length,
+                    days:dat.days
                 }));
     };
     load();
