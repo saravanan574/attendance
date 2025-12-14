@@ -12,12 +12,13 @@ const AttendanceHistory = () => {
   const [modify, setModify] = useState(false);
 
   useEffect(() => {
-    if (!attendance) return;
+  if (!attendance) return;
+  const days = attendance.days || [];
+  const todayDate = new Date().toISOString().split("T")[0];
+  setToday(days.filter(d => d.date === todayDate));
+  setHistory(days);
+}, [attendance]);
 
-    const todayDate = new Date().toISOString().split("T")[0];
-    setToday(attendance.days.filter(d => d.date === todayDate));
-    setHistory(attendance.days);
-  }, [attendance]);
 
   const handleChange = (date, status, saveNow) => {
     setHistory(prev =>
