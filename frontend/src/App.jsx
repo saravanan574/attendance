@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Attendance from "./pages/Attendance";
 import { AttendanceProvider } from "./components/AttendanceContext";
+import "./App.css"
 
 export default function App() {
   return (
