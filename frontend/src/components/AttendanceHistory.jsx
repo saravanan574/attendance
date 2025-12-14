@@ -35,7 +35,7 @@ const AttendanceHistory = () => {
     if (type === "All") {
       setHistory(attendance.days);
     } else {
-      setHistory(attendance.days.filter(d => d.status === type));
+      setHistory(attendance.days.filter(d => d.status?.toLowerCase() === type.toLowerCase())));
     }
   };
 
@@ -78,7 +78,7 @@ return (
                     {today.length == 0 && <div className = "history-item" ><h2>Today is Sunday</h2></div>}
                     {today && (
                         today.map((item) => 
-                        (<div id={item.date} className="history-item" style = {{border:"1px solid red",boxShadow:"0 5px 20px rgba(0,1,2,0.03)"}}>
+                        (<div key={item.date} className="history-item" style = {{border:"1px solid red",boxShadow:"0 5px 20px rgba(0,1,2,0.03)"}}>
                             <strong>{item.date}</strong>
                             <div className="muted">{item.day}</div> 
                             <span className={`status ${item.status && item.status?.toLowerCase()}`}>{item.status ||"Not Marked"}</span>
@@ -95,7 +95,7 @@ return (
                     <h3>History</h3>   
                     <div>
                     {!modify && <select value = {filter} onChange= {(e)=> filterBy(e.target.value)}
-                    style={{padding:"3px",margin:"4px",Width:"60px",borderRadius:"10px",height:"39px"}}>
+                    style={{padding:"3px",margin:"4px",width:"60px",borderRadius:"10px",height:"39px"}}>
                         <option value = "All">All</option>
                         <option value = "Present">Present</option>
                         <option value = "Absent">Absent</option>
@@ -110,7 +110,7 @@ return (
                   </div>
                 <div className="history-list">
                         {history.map((item) => 
-                            (<div id={item.date} className={`history-item ${item.status}`}>
+                            (<div key={item.date} className={`history-item ${item.status}`}>
                                 <strong>{item.date}</strong>
                                 <div className="muted">{item.day}</div> 
                                 <span className={`status ${item.status}`}>{item.status ||"Not Marked"}</span>
