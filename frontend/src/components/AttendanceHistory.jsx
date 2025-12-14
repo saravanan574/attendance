@@ -35,7 +35,8 @@ const AttendanceHistory = () => {
     if (type === "All") {
       setHistory(attendance.days);
     } else {
-      setHistory(attendance.days.filter(d => d.status?.toLowerCase() === type.toLowerCase())));
+      setHistory(attendance.days.filter(d => 
+        d.status?.toLowerCase() === type.toLowerCase()));
     }
   };
 
