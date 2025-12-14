@@ -19,7 +19,13 @@ export const AttendanceProvider = ({ children }) => {
 
       if (!res.ok) return navigate("/login");
       const data = await res.json();
-      setAttendance(data.data);
+      setAttendance(prev => ({
+                    ...prev,
+                    data,
+                    presentCount:data.days.filter(item => item.status === "Present").length,
+                    absentCount:data.days.filter(item => item.status === "Absent").length,
+                    days:data.days
+                }));
     };
     load();
   }, []);
