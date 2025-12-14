@@ -79,9 +79,29 @@ const verifyToken = (req, res, next) => {
 
 /* ---------- ATTENDANCE ---------- */
 app.get("/api/attendance", verifyToken, async (req, res) => {
-  const user = await User.findOne({ id: req.id });
-  if (!user) return res.sendStatus(401);
-  res.json({ status: "success", data: user });
-});
+    const id = req.id;
+    const data = await User.findOne({id});
+    if(!data) return res.status(401).json({message:"User is not found",status:"failed"});
+    const today = new Date();
+    const filter = data.days.filter(d => new Date(d.date)<= today)
+    const k = {name:data.name,email:data.email,days:filter.reverse()};
+    res.status(200).json({message:"Data get successfully",status:"success",data:k});
+
+})
+
+app.put("/api/update",verifyToken,async(req,res) => {
+    const id = req.id;
+    const user = await User.findOne({id});
+    if(!user) return res.status(301).json({message:"User not found",status:"failed"});
+    const update = req.body;
+    const updated = user.days.map(d => {
+        const us = update.find(f => f.date == d.date);
+        return us?{...d,status:us.status}:d;
+    })
+    user.days = updated;
+    await user.save();
+    res.status(200).json({message:"Updated successfully",status:"success",data:user});
+})
+                         
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
