@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://attendance-frontend.onrender.com", // 🔴 CHANGE TO YOUR FRONTEND URL
+  origin: "https://attendance-1-410u.onrender.com", // 🔴 CHANGE TO YOUR FRONTEND URL
   credentials: true
 }));
 
