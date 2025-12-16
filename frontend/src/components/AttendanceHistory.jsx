@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { AttendanceContext } from "./AttendanceContext";
 import Button from "./Button";
+import Loader from "../pages/Loader"
 
 const AttendanceHistory = () => {
   const { attendance, setAttendance } = useContext(AttendanceContext);
@@ -72,7 +73,7 @@ const AttendanceHistory = () => {
     }
   };
 
-  if (!attendance) return null;
+  if (!attendance) return <Loader />;
 
 return (
         <div className="card">
@@ -81,11 +82,10 @@ return (
                     {today.length == 0 && <div className = "history-item" ><h2>Today is Sunday</h2></div>}
                     {today && (
                         today.map((item) => 
-                        (<div key={item.date} className="history-item" style = {{border:"1px solid red",boxShadow:"0 5px 20px rgba(0,1,2,0.03)"}}>
-                            <strong>{item.date}</strong>
-                            <div className="muted">{item.day}</div> 
-                            <span className={`status ${item.status && item.status?.toLowerCase()}`}>{item.status ||"Not Marked"}</span>
-                            {!item.status && <div className = "editbtn" style ={{gap:"3px"}}>
+                        (<div key={item.date}  className ={`history-item ${item.status}`} style = {{border:"1px solid red",boxShadow:"0 5px 20px rgba(0,1,2,0.03)"}}>
+                             <div> <strong>{item.date}</strong> - <strong className="muted">{item.day}</strong></div>
+                            <span className={`status ${ item.status}`}>{item.status ||"Not Marked"}</span>
+                            {!item.status && <div className = "editbtn" style ={{gap:"5px"}}>
                                 <Button onClick={() => handleChange(item.date,"Present",true)} className = "Present"  variant="att-btn">Present</Button>
                                 <Button onClick={() => handleChange(item.date,"Absent",true)} className = "Absent" variant="att-btn">Absent</Button>
                                 <Button onClick={() => handleChange(item.date,"Holiday",true)} className = "Holiday" variant="att-btn">Holiday</Button>
@@ -105,24 +105,26 @@ return (
                         <option value = "Holiday">Holiday</option>
                     </select>}
                     {modify && 
-                    <Button variant = "att-btn" onClick={() =>setModify(!modify)} > Cancel</Button>
+                    <Button variant = "att-btn" onClick={() =>setModify(!modify)} bg="red" col= "white"> Cancel</Button>
 }
-                    <Button variant = "att-btn" onClick={updateHistory} > {modify?"Save":"Edit"}</Button>
+                    <Button variant = "att-btn" onClick={updateHistory} col = "white" bg = {modify?"green":"blue"} > {modify?"Save":"Edit"}</Button>
               
                     </div>
                   </div>
                 <div className="history-list">
                         {history.map((item) => 
-                            (<div key={item.date} className={`history-item ${item.status}`}>
-                                <strong>{item.date}</strong>
-                                <div className="muted">{item.day}</div> 
+                            (
+                            <div key={item.date} className={`history-item ${item.status}`}>
+                                <div> <strong>{item.date}</strong> - <strong className="muted">{item.day}</strong></div>
+                               
                                 <span className={`status ${item.status}`}>{item.status ||"Not Marked"}</span>
                                 {modify && <div className = "editbtn" style ={{gap:"3px"}}>
                                 <Button onClick={() => handleChange(item.date,"Present",false)}  variant="att-btn" className = "Present" >Present</Button>
                                 <Button onClick={() => handleChange(item.date,"Absent",false)} className = "Absent" variant="att-btn">Absent</Button>
                                 <Button onClick={() => handleChange(item.date,"Holiday",false)} className = "Holiday" variant="att-btn">Holiday</Button>
-                            </div>}
-                            </div>
+                               </div>
+                            }
+                          </div>
                             )
                         )}
                 </div>

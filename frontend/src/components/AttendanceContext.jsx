@@ -1,38 +1,56 @@
 import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-export const AttendanceContext = createContext();
+export const AttendanceContext = createContext(null);
 
 export const AttendanceProvider = ({ children }) => {
   const API = import.meta.env.VITE_API_BASE_URL;
-  const navigate = useNavigate();
-  const [attendance, setAttendance] = useState();
+  const [attendance, setAttendance] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useEffect(() => { 
     const load = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return navigate("/login");
 
-      const res = await fetch(`${API}/api/attendance`, {
-        headers: { Authorization: "Bearer " + token }
-      });
+      // Do NOT navigate here
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-      if (!res.ok) return navigate("/login");
-      const data = await res.json();
-      const dat = data.data;
-      setAttendance(prev => ({
-                    ...prev,
-                    data:dat,
-                    presentCount:dat.days.filter(item => item.status === "Present").length,
-                    absentCount:dat.days.filter(item => item.status === "Absent").length,
-                    days:dat.days
-                }));
+      try {
+        const res = await fetch(`${API}/api/attendance`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) {
+          setAttendance(null);
+          setLoading(false);
+          return;
+        }
+
+        const json = await res.json();
+        const dat = json.data;
+
+        setAttendance({
+          data: dat,
+          days: dat.days || [],
+          presentCount: dat.days.filter(d => d.status === "Present").length,
+          absentCount: dat.days.filter(d => d.status === "Absent").length
+        });
+      } catch (err) {
+        console.error("Attendance load failed", err);
+      } finally {
+        setLoading(false);
+      }
     };
+
     load();
   }, []);
 
   return (
-    <AttendanceContext.Provider value={{ attendance, setAttendance }}>
+    <AttendanceContext.Provider
+      value={{ attendance, setAttendance, loading }}
+    >
       {children}
     </AttendanceContext.Provider>
   );

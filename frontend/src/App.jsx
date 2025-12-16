@@ -4,24 +4,20 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Attendance from "./pages/Attendance";
 import { AttendanceProvider } from "./components/AttendanceContext";
-import "./App.css"
+import "./App.css";
 
 export default function App() {
+  
   return (
     <HashRouter>
-      <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/attendance"
-          element={
-            <AttendanceProvider>
-              <Attendance />
-            </AttendanceProvider>
-          }
-        />
-      </Routes>
+      <AttendanceProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/attendance" element={<Attendance />} />
+        </Routes>
+      </AttendanceProvider>
     </HashRouter>
   );
 }

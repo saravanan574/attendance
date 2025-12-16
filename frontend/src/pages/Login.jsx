@@ -29,13 +29,34 @@ export default function Login() {
   };
 
   return (
-    <div className="card form-card">
+    <div className="card"  style = {{maxWidth:"500px",margin:"3px auto",padding:"5px"}}>
+      <h2>Student Attendance Management System</h2>
+      <Button className="auth-header">
+        <Link to="/" className="home-link"  style = {{color:"white"}}>Home</Link>
+      </Button>
+      <div className="card" style = {{padding:"4px",textAlign:"center"}} >
       <h2>Login</h2>
       <p>{message}</p>
       <Input type="email" placeholder="Email" onChange={e => setData({ ...data, email: e.target.value })} />
       <Input type="password" placeholder="Password" onChange={e => setData({ ...data, password: e.target.value })} />
       <Button onClick={submit}>Login</Button>
-      <p>Don’t have an account? <Link to="/register">Register</Link></p>
+      <p>Don’t have an account? <Link to="/register" style ={{backgroundColor:"red",color:"white",borderRadius:"10px",padding:"5px 10px"}}>Register</Link></p>
+      </div>
+      <div className="dashboard-card">
+      <p>
+  This system allows students to track their attendance on a day-to-day basis.
+  Attendance records are updated by the student and reflected instantly
+  in percentage calculations.
+</p>
+
+<ul>
+  <li>Mark attendance daily as Present, Absent, or Holiday</li>
+  <li>Edit mistakenly updated attendance using history edit mode</li>
+  <li>Filter attendance by Present, Absent, and Holiday</li>
+  <li>Attendance percentage is indicative, not guaranteed</li>
+  <li>Use the attendance calculator to plan for 75% eligibility</li>
+</ul>
+      </div>
     </div>
   );
 }

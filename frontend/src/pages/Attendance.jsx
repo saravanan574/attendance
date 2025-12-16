@@ -4,6 +4,8 @@ import { AttendanceContext } from "../components/AttendanceContext";
 import { useContext } from "react";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import {Link } from "react-router-dom"
+import Loader from "./Loader"
 
 const Attendance = () => {
   const navigate = useNavigate(); // ✅ hooks at top
@@ -11,7 +13,7 @@ const Attendance = () => {
 
   const API = import.meta.env.VITE_API_BASE_URL;
 
-  if (!attendance) return <p>Loading...</p>;
+  // if (!attendance) return <Loader />;
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -19,32 +21,50 @@ const Attendance = () => {
   };
 
   return (
+
     <div className="attendance">
-      <div
+      <div className="card dashboard-header"
         style={{
           display: "flex",
-          backgroundColor: "gray",
+          height:"60px",
+          width:"100%",
+          
+          background:"linear-gradient(135deg, #010101, #2a5298)",
           color: "white",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
           alignItems: "center"
         }}
       >
         <h3>{attendance?.data?.name}</h3>
-        <h3>Attendance</h3>
-        <Button variant="att-btn" onClick={logout}>
+        <div>
+        <Button variant="att-btn" bg="white">
+        <Link to="/">Home</Link>
+        </Button>
+        <Button variant="att-btn" bg="red" col = "white" onClick={logout}>
           Logout
         </Button>
-      </div>
-
-      <div className="attendance-page">
-        <div className="left-box">
-          <AttendanceCard />
-        </div>
-        <div className="right-box">
-          <AttendanceHistory />
         </div>
       </div>
-    </div>
+      {!attendance ? (
+          <div className="attendance-page">
+            <div className="left-box">
+              <AttendanceCard />
+            </div>
+            <div className="right-box">
+              <AttendanceHistory />
+            </div>
+          </div>): (
+          <div className="attendance-page">
+            <div className="left-box">
+              <AttendanceCard />
+            </div>
+            <div className="right-box">
+              <AttendanceHistory />
+            </div>
+          </div>
+        
+      )}
+      </div>
   );
 };
 

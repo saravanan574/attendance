@@ -1,4 +1,4 @@
-const Button = ({children,onClick,className ,type = "button",variant = "default"}) => {
+const Button = ({children,onClick,className,col,bg ,type = "button",variant = "default"}) => {
 
     const design = {
         "default":{
@@ -13,8 +13,8 @@ const Button = ({children,onClick,className ,type = "button",variant = "default"
         },
         "att-btn":{
             padding:"10px 13px",
-            backgroundColor:"#4aa3df",
-            color:"#ffffff",
+            backgroundColor:bg,
+            color:col,
             border:"none",
             borderRadius:"4px",
             cursor:"pointer",
