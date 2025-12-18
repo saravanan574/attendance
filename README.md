@@ -1,16 +1,60 @@
-# React + Vite
+# 📊 Student Attendance Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based application to track, analyze, and plan student attendance efficiently.
+The system updates attendance records in real time and calculates attendance percentages instantly to help students plan for eligibility requirementsBuilt using **Node.js**, **Express**, **MongoDB**, **AngularJS**, **HTML**, **CSS**, and **JavaScript**.
 
-Currently, two official plugins are available:
+##  Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Attendance Management
+- Mark attendance as **Present**, **Absent**, or **Holiday**
+- Instant updates to records
+- Edit incorrectly marked attendance using history edit mode
 
-## React Compiler
+### Attendance Tracking
+- Real-time attendance percentage calculation
+- Clear dashboard for easy understanding
+- Separate tracking for Present, Absent, and Holiday days
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Filtering & Analysis
+- Filter records by:
+  - Present
+  - Absent
+  - Holiday
+- Analyze attendance trends
 
-## Expanding the ESLint configuration
+### Attendance Planner
+- Attendance calculator for planning
+- Helps plan for **75% eligibility**
+- Percentage shown is indicative only
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Important Note
+
+- Attendance percentage is for planning purposes only
+- Final eligibility depends on institutional policies
+- Does not replace official attendance records
+
+## Tech Stack
+
+### Frontend
+- React.js
+- Vite
+- JavaScript (ES6+)
+- HTML5
+- CSS3
+- Responsive Single Page Application (SPA)
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
+- JWT Authentication
+- Rest API
+
+### ‎Deploy the website in the render I given the link in the description you can verify it and you can use as a application after install the site in your device.‎
+
+---
+
+## Deploy website in the render I given the link in the description you can verify it and you can also used as a application after install the site in your device
+
+
+© 2025 Student Attendance Management System
