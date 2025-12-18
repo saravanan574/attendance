@@ -52,9 +52,3 @@ The system updates attendance records in real time and calculates attendance per
 
 ### ‎Deploy the website in the render I given the link in the description you can verify it and you can use as a application after install the site in your device.‎
 
----
-
-## Deploy website in the render I given the link in the description you can verify it and you can also used as a application after install the site in your device
-
-
-© 2025 Student Attendance Management System
