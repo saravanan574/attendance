@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://attendance-1-410u.onrender.com/", 
+  origin: "https://attendance-1-410u.onrender.com", 
   credentials: true
 }));
 
