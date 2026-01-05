@@ -1,8 +1,8 @@
+import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
 import { genSalt, hash, compare } from "bcryptjs";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://attendance-1-410u.onrender.com", 
+  origin:process.env.ORIGIN , 
   credentials: true
 }));
 
@@ -39,6 +39,29 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model("user", userSchema);
 
+function getWorkingDays(startMonth, startYear, endMonth, endYear) {
+  const workingDays = [];
+  const startDate = new Date(startYear, startMonth - 1, 1);
+  const endDate = new Date(endYear, endMonth, 0); // last day of endMonth
+
+  let current = new Date(startDate);
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  while (current <= endDate) {
+  const y = current.getDay(); // 0 = Sunday
+  if (y !== 0) {
+    const yyy = current.getFullYear();
+    const mm = String(current.getMonth()+1).padStart(2,"0");
+    const dd = String(current.getDate()).padStart(2,"0");
+    workingDays.push({
+        date: `${yyy}-${mm}-${dd}`,
+        day: days[y],
+        status: null
+    });
+}
+current.setDate(current.getDate() + 1);
+}
+return workingDays;
+}
 /* ---------- AUTH ROUTES ---------- */
 app.post("/api/auth/register", async (req, res) => {
   const { name, email, password } = req.body;
@@ -47,8 +70,7 @@ app.post("/api/auth/register", async (req, res) => {
   if (exists) return res.status(400).json({ status: "failed", message: "Email exists" });
 
   const hashed = await hash(password, await genSalt(10));
-  await User.create({ id: Date.now(), name, email, password: hashed, days: [] });
-
+  await User.create({ id: Date.now(), name, email, password: hashed, days: getWorkingDays(12,2025,4,2026) });
   res.json({ status: "success" });
 });
 
@@ -61,7 +83,7 @@ app.post("/api/auth/login", async (req, res) => {
   const ok = await compare(password, user.password);
   if (!ok) return res.status(401).json({ status: "failed", message: "Invalid password" });
 
-  const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" });
+  const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
 
   res.json({ status: "success", token });
 });
@@ -71,10 +93,16 @@ const verifyToken = (req, res, next) => {
   const auth = req.headers.authorization;
   if (!auth) return res.sendStatus(401);
 
+  try{
   const token = auth.split(" ")[1];
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   req.id = decoded.id;
   next();
+  }
+  catch(e){
+    res.status(402).json({message:"Token is expired ",status:"failed"})
+  }
+  
 };
 
 /* ---------- ATTENDANCE ---------- */
@@ -100,7 +128,10 @@ app.put("/api/update",verifyToken,async(req,res) => {
     })
     user.days = updated;
     await user.save();
-    res.status(200).json({message:"Updated successfully",status:"success",data:user});
+    const today = new Date();
+    const filter = user.days.filter(d => new Date(d.date)<= today);
+    const k = {name:user.name,email:user.email,days:filter.reverse()};
+    res.status(200).json({message:"Updated successfully",status:"success",data:k});
 })
                          
 

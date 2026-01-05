@@ -6,12 +6,14 @@ import Button from "../components/Button";
 export default function Login() {
   const API = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
-
+  
   const [data, setData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/attendance");
+    if(localStorage.getItem("token")){
+      navigate("/attendance");
+    }
   }, []);
 
   const submit = async () => {
@@ -30,17 +32,22 @@ export default function Login() {
 
   return (
     <div className="card"  style = {{maxWidth:"500px",margin:"3px auto",padding:"5px"}}>
-      <h2>Student Attendance Management System</h2>
-      <Button className="auth-header">
-        <Link to="/" className="home-link"  style = {{color:"white"}}>Home</Link>
-      </Button>
+      <h2 style={{textAlign:"center"}}  > Attendance Management System</h2>
+      <Button className="home-btn" bg="red"  onClick={() => navigate("/home")}>
+                  Home
+                </Button>
+
       <div className="card" style = {{padding:"4px",textAlign:"center"}} >
       <h2>Login</h2>
       <p>{message}</p>
-      <Input type="email" placeholder="Email" onChange={e => setData({ ...data, email: e.target.value })} />
+      <Input type="email" placeholder="Email/Unique id" onChange={e => setData({ ...data, email: e.target.value })} />
       <Input type="password" placeholder="Password" onChange={e => setData({ ...data, password: e.target.value })} />
       <Button onClick={submit}>Login</Button>
-      <p>Don’t have an account? <Link to="/register" style ={{backgroundColor:"red",color:"white",borderRadius:"10px",padding:"5px 10px"}}>Register</Link></p>
+      <p>Don’t have an account? 
+        
+      <Button variant="att-btn" bg="#190f1f" col="white"  onClick={() => navigate("/register")}>
+                  Register
+                </Button></p>
       </div>
       <div className="dashboard-card">
       <p>

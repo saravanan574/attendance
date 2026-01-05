@@ -49,15 +49,15 @@ if(data.password.length < 6){
   return (
     <div className="card "style = {{maxWidth:"500px",margin:"3px auto",padding:"5px"}}>
       <h2>Student Attendance Management System</h2>
-      <Button className="auth-header">
-        <Link to="/" className="home-link" style = {{color:"white"}}>Home</Link>
-      </Button>
+      <Button className="home-btn" bg="red"  onClick={() => navigate("/home")}>
+                  Home
+                </Button>
 
       <div className="card" style = {{margin:"3px auto",padding:"5px",textAlign:"center"}}>
       <h3>Create Account</h3>
       <p>{message}</p>
       <Input name="name" type = "text" placeholder="Name" onChange={e => setData({ ...data, name: e.target.value })} />
-      <Input name="email" type = "email" placeholder="Email" onChange={e => setData({ ...data, email: e.target.value })} />
+      <Input name="email" type = "email" placeholder="Email/Unique id" onChange={e => setData({ ...data, email: e.target.value })} />
       <Input name="password" type = "password" placeholder="Password" onChange={e => setData({ ...data, password: e.target.value })} />
       <Button onClick={submit}>Register</Button>
       <p>Already have an account? <Link to="/login" style ={{backgroundColor:"red",color:"white",borderRadius:"10px",padding:"5px 10px"}}>Login</Link></p>

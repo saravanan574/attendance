@@ -1,57 +1,55 @@
-import { createContext, useEffect, useState } from "react";
+  import { createContext, useEffect, useState } from "react";
+  import {useNavigate} from "react-router-dom";
 
-export const AttendanceContext = createContext(null);
+  export const AttendanceContext = createContext(null);
 
-export const AttendanceProvider = ({ children }) => {
-  const API = import.meta.env.VITE_API_BASE_URL;
-  const [attendance, setAttendance] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => { 
-    const load = async () => {
-      const token = localStorage.getItem("token");
-
-      // Do NOT navigate here
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API}/api/attendance`, {
-          headers: { Authorization: "Bearer " + token }
-        });
-
-        if (!res.ok) {
-          setAttendance(null);
-          setLoading(false);
+  export const AttendanceProvider = ({ children }) => {
+    const API = import.meta.env.VITE_API_BASE_URL;
+    const [attendance, setAttendance] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    useEffect(() => { 
+      const load = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
           return;
         }
 
-        const json = await res.json();
-        const dat = json.data;
+        try {
+          const res = await fetch(`${API}/api/attendance`, {
+            headers: { Authorization: "Bearer " + token }
+          });
 
-        setAttendance({
-          data: dat,
-          days: dat.days || [],
-          presentCount: dat.days.filter(d => d.status === "Present").length,
-          absentCount: dat.days.filter(d => d.status === "Absent").length
-        });
-      } catch (err) {
-        console.error("Attendance load failed", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+          if (!res.ok) {
+            navigate("/Loader");
+            return;
+          }
+          const json = await res.json();
+          const dat = json.data;
 
-    load();
-  }, []);
+          setAttendance({
+            data: dat,
+            days: dat.days || [],
+            presentCount: dat.days.filter(d => d.status === "Present").length,
+            absentCount: dat.days.filter(d => d.status === "Absent").length,
+            holidayCount: dat.days.filter(h => h.status === "Holiday").length
+          });
+        } catch (err) {
+          console.error("Attendance load failed", err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  return (
-    <AttendanceContext.Provider
-      value={{ attendance, setAttendance, loading }}
-    >
-      {children}
-    </AttendanceContext.Provider>
-  );
-};
+      load();
+    }, [attendance]);
+
+    return (
+      <AttendanceContext.Provider
+        value={{ attendance, setAttendance, loading }}
+      >
+        {children}
+      </AttendanceContext.Provider>
+    );
+  };

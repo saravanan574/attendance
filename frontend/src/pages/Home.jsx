@@ -4,14 +4,12 @@ import Button from "../components/Button"
 const Home = () => {
     const navigate = useNavigate();
     const isLoggedIn = !!localStorage.getItem("token");
-
   return (
       <div className="card" style = {{display:"flex",flexDirection:"column",margin:"10px 10px"}}>
         
         <div className="dashboard-wrapper">
-      {/* Header */}
       <header className="dashboard-header">
-        <h1>Student Attendance Management System</h1>
+        <h1>Attendance Management System</h1>
         <p className="subtitle">
           Track, analyze, and plan your attendance efficiently
         </p>
@@ -21,19 +19,19 @@ const Home = () => {
             
             {!isLoggedIn ? (
               <div style={{ marginTop: "20px", display: "flex", gap: "12px" }}>
-                <Button className="home-btn"  onClick={() => navigate("/login")}>
+                <Button className="home-btn" bg="red"  onClick={() => navigate("/login")}>
                   Login
                 </Button>
-                <Button className="home-btn"  onClick={() => navigate("/register")}>
+                <Button className="home-btn" bg="green"  onClick={() => navigate("/register")}>
                   Register
                 </Button>
               </div>
             ):(
               <div style={{ marginTop: "20px", display: "flex", gap: "12px" }}>
-                <Button  onClick={() => navigate("/attendance")}>
+                <Button bg="#5f5f5f" col = "white" onClick={() => navigate("/attendance")}>
                 Dashboard
                 </Button>
-                <Button
+                <Button bg="red" col = "white" 
                   onClick={() => {
                     localStorage.removeItem("token");
                     window.location.reload();
@@ -51,7 +49,7 @@ const Home = () => {
           <h2>Overview</h2>
           <p>
             This system allows students to monitor their attendance on a
-            day-to-day basis. Attendance records are updated instantly and
+            day-to-day basis. Attendance records are updated by yourself instantly and
             reflected in real-time percentage calculations.
           </p>
         </div>
@@ -81,7 +79,9 @@ const Home = () => {
           <p>
             This system is intended for personal tracking and planning. It does
             not replace official attendance records maintained by the institution.
+            
           </p>
+          <strong>Something went wrong in attendance because of you only</strong>
         </div>
       </section>
 

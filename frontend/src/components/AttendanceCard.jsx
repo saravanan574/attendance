@@ -4,8 +4,6 @@ import Button from "./Button";
 
 const AttendanceCard = () => {
   const { attendance } = useContext(AttendanceContext);
-
-  // ✅ Hooks MUST come before any return
   const [increment, setIncrement] = useState({
     present: 0,
     absent: 0,
@@ -24,14 +22,11 @@ const AttendanceCard = () => {
       percentage: perc
     });
   }, [attendance?.presentCount, attendance?.absentCount]);
-  // 👆 precise dependencies — prevents infinite loop
-
-  // ✅ SAFE early return AFTER hooks
   if (!attendance) return null;
 
   const total = attendance.presentCount + attendance.absentCount;
   const percentage =
-    total === 0 ? 0 : ((attendance.presentCount / total) * 100).toFixed(2);
+    total === 0 ? 0 : ((attendance.presentCount / total) * 100).toFixed(0)
 
   const handleChange = (type, value) => {
     setIncrement(prev => {
@@ -51,7 +46,8 @@ const AttendanceCard = () => {
     <div>
       <div className="card"  >
         <div style={{ display: "flex", justifyContent: "space-around", alignItems:"center",padding:"5px 3px"}}>
-          <div className="circle-container">
+          <div>
+            <div className="circle-container">
             <div
               className="progress-circle"
               style={{
@@ -67,8 +63,16 @@ const AttendanceCard = () => {
               <div className="circle-inner">
                 <h4>{percentage}%</h4>
               </div>
+              
             </div>
+            
           </div>
+          {((attendance.presentCount / total) * 100).toFixed(2) < 75 &&  (<div style ={{color:"#c62828",textAlign:"center",fontWeight:"bold",background:"rgba(242, 212, 212, 0.793)",borderRadius:"3px"}}>
+                  <p>Required  <strong>{3*attendance.absentCount-attendance.presentCount}</strong> class</p>
+                </div>
+              )}
+          </div>
+          
           <div>
             <table cellPadding={6}>
               <tbody>
@@ -84,14 +88,15 @@ const AttendanceCard = () => {
                   <th>Absent</th>
                   <td>{attendance.absentCount}</td>
                 </tr>
+                
                 <tr>
                   <th>Percentage</th>
-                  <td>{((attendance.presentCount / total) * 100).toFixed(2)}</td>
+                  <td>{total > 0 ? ((attendance.presentCount / total) * 100).toFixed(2):0.00}</td>
                 </tr>
-                {((attendance.presentCount / total) * 100).toFixed(2) < 75 && (<tr>
-                  <th style ={{color:"white",backgroundColor:"red"}}>Required class</th>
-                  <td>{3*attendance.absentCount-attendance.presentCount}</td>
-                </tr>)}
+                <tr>
+                  <th>Holiday</th>
+                  <td>{attendance.holidayCount}</td>
+                </tr>
               </tbody>
             </table>
           </div>

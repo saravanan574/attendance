@@ -1,20 +1,24 @@
 import AttendanceCard from "../components/AttendanceCard";
 import AttendanceHistory from "../components/AttendanceHistory";
 import { AttendanceContext } from "../components/AttendanceContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import {Link } from "react-router-dom"
 import Loader from "./Loader"
 
 const Attendance = () => {
-  const navigate = useNavigate(); // ✅ hooks at top
   const { attendance } = useContext(AttendanceContext);
-
+  const navigate = useNavigate();
   const API = import.meta.env.VITE_API_BASE_URL;
 
-  // if (!attendance) return <Loader />;
-
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+  })
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/login", { replace: true });
@@ -38,7 +42,7 @@ const Attendance = () => {
         <h3>{attendance?.data?.name}</h3>
         <div>
         <Button variant="att-btn" bg="white">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
         </Button>
         <Button variant="att-btn" bg="red" col = "white" onClick={logout}>
           Logout

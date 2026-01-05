@@ -3,8 +3,8 @@ const Button = ({children,onClick,className,col,bg ,type = "button",variant = "d
     const design = {
         "default":{
             padding:"10px 20px",
-            backgroundColor:"#007bff",
-            color:"white",
+            backgroundColor:bg||"#007bff",
+            color:col ||"white",
             border:"none",
             borderRadius:"4px",
             cursor:"pointer",
@@ -31,6 +31,7 @@ const Button = ({children,onClick,className,col,bg ,type = "button",variant = "d
             width:"min-content",
             height:"min-content"
         }
+
     }
     return (
         <button 
