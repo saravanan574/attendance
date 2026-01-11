@@ -27,7 +27,7 @@
             return;
           }
           else if(json.status == "failed"){
-            navigate("/Loader);
+            navigate("/loader");
             return;
           }
           const dat = json.data;
