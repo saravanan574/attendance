@@ -20,12 +20,16 @@
           const res = await fetch(`${API}/api/attendance`, {
             headers: { Authorization: "Bearer " + token }
           });
-
-          if (!res.ok) {
-            navigate("/Loader");
+          const json = await res.json();
+          if (json.status == "failed" && json.message == "Token is expired " ) {
+            localStorage.removeItem("token");
+            navigate("/Login");
             return;
           }
-          const json = await res.json();
+          else if(json.status == "failed"){
+            navigate("/Loader);
+            return;
+          }
           const dat = json.data;
 
           setAttendance({
